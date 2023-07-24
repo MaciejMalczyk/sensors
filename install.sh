@@ -9,7 +9,7 @@ sudo python3 raspi-blinka.py
 echo "3: Install libraries for sensors"
 pip3 install adafruit-circuitpython-lis3dh
 pip3 install adafruit-circuitpython-mcp9808
-pip3 install asyncio websockets
+pip3 install asyncio websockets ADS1x15-ADC
 cd ./modules
 git clone https://github.com/wujekbrezniew/python-apds9960
 cp -r python-apds9960/apds9960 apds9960

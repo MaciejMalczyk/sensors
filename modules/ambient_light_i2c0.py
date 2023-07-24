@@ -3,7 +3,7 @@ import smbus
 from time import sleep
 
 def get():
-    port = 1
+    port = 0
     bus = smbus.SMBus(port)
     apds = device.APDS9960(bus)
 

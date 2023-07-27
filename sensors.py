@@ -11,7 +11,7 @@ def send():
             "t0": temperature_0.get(),
             "t1": temperature_1.get(),
             "g": accel.get(),
-            "h": humidity.get()
+            "W": moisture.get()
         }
 
     with connect("ws://clinostate.local:8080") as websocket:

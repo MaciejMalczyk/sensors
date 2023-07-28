@@ -1,26 +1,25 @@
 from modules import *
-from websockets.sync.client import connect
 
-import asyncio
 import json
+import pymongo
+import datetime
 
 def send():
+    
     results = {
             "l0": ambient_light_i2c0.get(),
             "l1": ambient_light_i2c1.get(),
             "t0": temperature_0.get(),
             "t1": temperature_1.get(),
             "g": accel.get(),
-            "W": moisture.get()
+            "W": moisture.get(),
+            "date": str(datetime.datetime.now())
         }
-
-    with connect("ws://clinostate.local:8080") as websocket:
-        data = {
-            "action": "sensors",
-            "data": results
-        }
-        websocket.send(json.dumps(data))
-
+    
+    mongo_client = pymongo.MongoClient("mongodb://192.168.1.102:27017")
+    clinostate_db = mongo_client["clinostate"]
+    cultivation_col = clinostate_db["cultivation"]
+    cultivation_col.insert_one(results)
 
     print(results)
 

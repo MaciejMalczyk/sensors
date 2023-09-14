@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "1: Install pip3"
-sudo apt update && sudo apt install -y python3-pip fswebcam
+sudo apt update && sudo apt install -y python3-pip python3-opencv
 echo "2: Update python setuptools"
 sudo pip3 install --upgrade setuptools
 echo "3: Install raspi-blinka"

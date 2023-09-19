@@ -1,0 +1,8 @@
+[Unit]
+Description=Sensors service
+
+[Service]
+ExecStart=/bin/bash /home/golf/sensors/run.sh
+
+[Install]
+WantedBy=multi-user.target 

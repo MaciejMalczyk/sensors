@@ -11,7 +11,6 @@ def send():
             "l1": ambient_light_i2c1.get(),
             "t0": temperature_0.get(),
             "t1": temperature_1.get(),
-            "g": accel.get(),
             "W": moisture.get(),
             "date": str(datetime.datetime.now())
         }

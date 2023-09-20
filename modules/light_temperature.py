@@ -1,4 +1,4 @@
-from modules import *
+from .sensors import *
 
 import json
 import pymongo
@@ -11,7 +11,6 @@ def send():
             "l1": ambient_light_i2c1.get(),
             "t0": temperature_0.get(),
             "t1": temperature_1.get(),
-            "W": moisture.get(),
             "date": str(datetime.datetime.now())
         }
     
@@ -21,5 +20,3 @@ def send():
     cultivation_col.insert_one(results)
 
     print(results)
-
-send()

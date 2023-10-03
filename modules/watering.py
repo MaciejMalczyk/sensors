@@ -11,7 +11,7 @@ def send():
     w = (moisture.get()/17300)*100
     print(w)
     try:
-        with connect("ws://192.168.1.145:8080") as websocket:
+        with connect("ws://192.168.88.249:8080") as websocket:
             websocket.send(json.dumps({
                 "action": "pump",
                 "data" : {
@@ -27,7 +27,7 @@ def send():
         "date": str(datetime.datetime.now()),
     }
     
-    mongo_client = pymongo.MongoClient("mongodb://192.168.1.102:27017")
+    mongo_client = pymongo.MongoClient("mongodb://192.168.88.247:27017")
     clinostate_db = mongo_client["clinostate"]
     cultivation_col = clinostate_db["watering"]
     cultivation_col.insert_one(results)

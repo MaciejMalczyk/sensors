@@ -35,4 +35,3 @@ def send():
 
     os.remove(img0)
     os.remove(img2)
-

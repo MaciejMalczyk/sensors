@@ -18,7 +18,7 @@ cp -r python-apds9960/apds9960 apds9960
 sudo rm -r python-apds9960
 echo "5: Generate ssh keys"
 echo "/home/$USER/.ssh/img" | ssh-keygen
-ssh-copy-id -i ~/.ssh/img -p 8022 img@192.168.1.102
+ssh-copy-id -i ~/.ssh/img -p 8022 img@golfserver.local
 echo "6: Setup i2c-0"
 sudo su -c "echo dtparam=i2c_vc=on >> /boot/config.txt"
 sudo reboot

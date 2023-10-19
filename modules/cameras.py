@@ -4,7 +4,7 @@ import cv2
 import datetime
 
 def send():
-    mongo_client = pymongo.MongoClient("mongodb://192.168.88.247:27017")
+    mongo_client = pymongo.MongoClient("mongodb://golfserver.local:27017")
     clinostate_db = mongo_client["clinostate"]
     cameras_col = clinostate_db["images"]
 
@@ -27,8 +27,8 @@ def send():
     os.system('./send.sh '+img2)
 
     results = {
-        "img0": "http://192.168.88.247:8080/"+img0,
-        "img2": "http://192.168.88.247:8080/"+img2
+        "img0": "http://golfserver.local:8080/"+img0,
+        "img2": "http://golfserver.local:8080/"+img2
         }
 
     cameras_col.insert_one(results)

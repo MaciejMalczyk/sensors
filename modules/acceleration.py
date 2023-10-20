@@ -7,10 +7,10 @@ import datetime
 def send():
     results = {
             "g": accel.get(),
-            "date": str(datetime.datetime.now()),
+            "date": datetime.datetime.now(tz=datetime.timezone.utc),
         }
     
-    mongo_client = pymongo.MongoClient("mongodb://golfserver.local:27017")
+    mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
     clinostate_db = mongo_client["clinostate"]
     cultivation_col = clinostate_db["acceleration"]
     cultivation_col.insert_one(results)

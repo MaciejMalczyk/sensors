@@ -4,13 +4,14 @@ import cv2
 import datetime
 
 def send():
-    mongo_client = pymongo.MongoClient("mongodb://golfserver.local:27017")
+    mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
     clinostate_db = mongo_client["clinostate"]
     cameras_col = clinostate_db["images"]
-
+    
     os.chdir('./modules/cameras')
+    
 
-    img0 = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")+".jpg"
+    img0 = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
     cap0 = cv2.VideoCapture(0)
     ret0, frame0 = cap0.read()
     rgb0 = cv2.cvtColor(frame0, cv2.COLOR_BGR2BGRA)
@@ -18,7 +19,7 @@ def send():
     cap0.release()
     os.system('./send.sh '+img0)
 
-    img2 = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")+".jpg"
+    img2 = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
     cap2 = cv2.VideoCapture(2)
     ret2, frame2 = cap2.read()
     rgb2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2BGRA)
@@ -27,11 +28,13 @@ def send():
     os.system('./send.sh '+img2)
 
     results = {
-        "img0": "http://golfserver.local:8080/"+img0,
-        "img2": "http://golfserver.local:8080/"+img2
+        "img0": "http://192.168.100.1:8080/"+img0,
+        "img2": "http://192.168.100.1:8080/"+img2
         }
 
     cameras_col.insert_one(results)
 
     os.remove(img0)
     os.remove(img2)
+
+    os.chdir('../../')

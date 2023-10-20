@@ -11,10 +11,10 @@ def send():
             "l1": ambient_light_i2c1.get(),
             "t0": temperature_0.get(),
             "t1": temperature_1.get(),
-            "date": str(datetime.datetime.now())
+            "date": datetime.datetime.now(tz=datetime.timezone.utc)
         }
     
-    mongo_client = pymongo.MongoClient("mongodb://golfserver.local:27017")
+    mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
     clinostate_db = mongo_client["clinostate"]
     cultivation_col = clinostate_db["cultivation"]
     cultivation_col.insert_one(results)

@@ -29,10 +29,13 @@ def send():
 
     results = {
         "img0": "http://192.168.100.1:8080/"+img0,
-        "img2": "http://192.168.100.1:8080/"+img2
+        "img2": "http://192.168.100.1:8080/"+img2,
+        "date": datetime.datetime.now(tz=datetime.timezone.utc)
         }
-
-    cameras_col.insert_one(results)
+    try: 
+        cameras_col.insert_one(results)
+    except:
+        print("No connection to mongodb")
 
     os.remove(img0)
     os.remove(img2)

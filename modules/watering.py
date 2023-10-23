@@ -30,5 +30,8 @@ def send():
     mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
     clinostate_db = mongo_client["clinostate"]
     cultivation_col = clinostate_db["watering"]
-    cultivation_col.insert_one(results)
+    try:
+        cultivation_col.insert_one(results)
+    except:
+        print("No connection to mongodb")
 

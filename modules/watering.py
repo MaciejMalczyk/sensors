@@ -1,15 +1,17 @@
 from .sensors import *
-import asyncio
 import json
 import datetime
 import pymongo
 from websockets.sync.client import connect
 
-w100 = 17300
+mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
+clinostate_db = mongo_client["clinostate"]
+cultivation_col = clinostate_db["watering"]
 
 def send():
-    w = (moisture.get()/17300)*100
-    print(w)
+    w = (moisture.get()/26928)*100
+    if w < 0 :
+        w = 0
     try:
         with connect("ws://clinostate.local:8080") as websocket:
             websocket.send(json.dumps({
@@ -19,19 +21,16 @@ def send():
                     "value": w,
                 }
             }))
+                
+        results = {
+            "w": w,
+            "date": datetime.datetime.now(tz=datetime.timezone.utc),
+        }
+            
+        try:
+            cultivation_col.insert_one(results)
+        except:
+            print("No connection to mongodb")
+            
     except:
         print("No connection to clinostate backend!")
-    
-    results = {
-        "w": w,
-        "date": datetime.datetime.now(tz=datetime.timezone.utc),
-    }
-    
-    mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
-    clinostate_db = mongo_client["clinostate"]
-    cultivation_col = clinostate_db["watering"]
-    try:
-        cultivation_col.insert_one(results)
-    except:
-        print("No connection to mongodb")
-

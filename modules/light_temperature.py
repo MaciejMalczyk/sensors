@@ -4,6 +4,10 @@ import json
 import pymongo
 import datetime
 
+mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
+clinostate_db = mongo_client["clinostate"]
+cultivation_col = clinostate_db["cultivation"]
+
 def send():
     
     results = {
@@ -14,9 +18,6 @@ def send():
             "date": datetime.datetime.now(tz=datetime.timezone.utc)
         }
     
-    mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
-    clinostate_db = mongo_client["clinostate"]
-    cultivation_col = clinostate_db["cultivation"]
     try:
         cultivation_col.insert_one(results)
     except:

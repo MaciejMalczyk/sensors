@@ -2,7 +2,9 @@
 Description=Sensors service
 
 [Service]
-ExecStart=/bin/bash /home/golf/sensors/run.sh
+Restart=on-failure
+RestartSec=5s
+ExecStart=/bin/su -c /home/golf/sensors/run.sh golf
 
 [Install]
 WantedBy=multi-user.target 

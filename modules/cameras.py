@@ -27,7 +27,7 @@ def send():
         os.system('./send.sh '+img0)
         results["img0"] = "http://192.168.100.1:8080/"+img0
     except:
-        print("Capturing img0 failed")
+        print("CAM: Capturing img0 failed")
         check = check + 1
     
     try:
@@ -40,7 +40,7 @@ def send():
         os.system('./send.sh '+img2)
         results["img2"] = "http://192.168.100.1:8080/"+img2
     except:
-        print("Capturing img2 failed")
+        print("CAM: Capturing img2 failed")
         check = check + 1
     
     if check == 2:
@@ -48,19 +48,19 @@ def send():
         return
     
     try:
-        print("Mongodb: sending")
+        print("CAM: Mongodb: sending")
         cameras_col.insert_one(results)
     except:
-        print("No connection to mongodb")
+        print("CAM: No connection to mongodb")
 
     try:
         os.remove(img0)
     except:
-        print("No img0 file")
+        print("CAM: No img0 file")
         
     try:
         os.remove(img2)
     except:
-        print("No img2 file")
+        print("CAM: No img2 file")
 
     os.chdir('../../')

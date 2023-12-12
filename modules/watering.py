@@ -30,7 +30,7 @@ def send():
         try:
             cultivation_col.insert_one(results)
         except:
-            print("No connection to mongodb")
+            print("W: No connection to mongodb")
             
     except:
         print("No connection to clinostate backend!")

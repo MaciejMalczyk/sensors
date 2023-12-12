@@ -9,6 +9,7 @@ clinostate_db = mongo_client["clinostate"]
 cultivation_col = clinostate_db["acceleration"]
 
 def send():
+
     results = {
             "g": accel.get(),
             "date": datetime.datetime.now(tz=datetime.timezone.utc),
@@ -17,5 +18,5 @@ def send():
     try:
         cultivation_col.insert_one(results)
     except:
-        print("No connection to mongodb")
+        print("Acc: No connection to mongodb")
  

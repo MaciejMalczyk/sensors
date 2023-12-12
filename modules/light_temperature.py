@@ -21,6 +21,6 @@ def send():
     try:
         cultivation_col.insert_one(results)
     except:
-        print("No connection to mongodb")
+        print("LT: No connection to mongodb")
 
-    # print(results)
+

@@ -3,9 +3,20 @@ import json
 import datetime
 import pymongo
 from websockets.sync.client import connect
+import os
+
+hostname = os.uname()[1]
+
+if "static" in hostname:
+    ws_string = "ws://clinostate-static.local:8080"
+    db_string = "clinostate-static"
+else:
+    ws_string = "ws://clinostate.local:8080"
+    db_string = "clinostate"
+
 
 mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
-clinostate_db = mongo_client["clinostate"]
+clinostate_db = mongo_client[db_string]
 cultivation_col = clinostate_db["watering"]
 
 def send():
@@ -13,7 +24,8 @@ def send():
     if w < 0 :
         w = 0
     try:
-        with connect("ws://clinostate.local:8080") as websocket:
+        print(ws_string)
+        with connect(ws_string) as websocket:
             websocket.send(json.dumps({
                 "action": "pump",
                 "data" : {

@@ -3,9 +3,17 @@ from .sensors import *
 import json
 import pymongo
 import datetime
+import os
+
+hostname = os.uname()[1]
+
+if "static" in hostname:
+    db_string = "clinostate-static"
+else:
+    db_string = "clinostate"
 
 mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
-clinostate_db = mongo_client["clinostate"]
+clinostate_db = mongo_client[db_string]
 cultivation_col = clinostate_db["cultivation"]
 
 def send():

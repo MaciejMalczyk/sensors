@@ -3,8 +3,16 @@ import pymongo
 import cv2
 import datetime
 
+hostname = os.uname()[1]
+
+if "static" in hostname:
+    db_string = "clinostate-static"
+else:
+    db_string = "clinostate"
+
+
 mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
-clinostate_db = mongo_client["clinostate"]
+clinostate_db = mongo_client[db_string]
 cameras_col = clinostate_db["images"]
 
 def send():
@@ -18,7 +26,7 @@ def send():
     os.chdir('./modules/cameras')
     
     try: 
-        img0 = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
+        img0 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap0 = cv2.VideoCapture(0)
         ret0, frame0 = cap0.read()
         rgb0 = cv2.cvtColor(frame0, cv2.COLOR_BGR2BGRA)
@@ -31,7 +39,7 @@ def send():
         check = check + 1
     
     try:
-        img2 = datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
+        img2 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap2 = cv2.VideoCapture(2)
         ret2, frame2 = cap2.read()
         rgb2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2BGRA)

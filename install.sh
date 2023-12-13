@@ -2,7 +2,7 @@
 
 echo "0: Checking connection to server"
 
-if [ $(ping -c 1 192.168.100.1 &> /dev/null) ] ; then
+if ping -c 1 192.168.100.1 &> /dev/null ; then
     echo "Continue..."
 else
     echo "No connection to server. Install zerotier and connect to proper network."

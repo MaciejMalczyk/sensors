@@ -2,10 +2,10 @@
 
 echo "0: Checking connection to server"
 
-if ping -c 1 192.168.100.1 &> /dev/null ; then
+if ping -c 1 golfserver &> /dev/null ; then
     echo "Continue..."
 else
-    echo "No connection to server. Install zerotier and connect to proper network."
+    echo "No connection to golfserver. Setup VPN and add address to /etc/hosts"
     exit 0
 fi
 
@@ -40,4 +40,5 @@ sudo systemctl daemon-reload
 sudo systemctl enable sensors.service
 echo "9: Chmod files"
 chmod +x ./modules/cameras/send.sh
+chmod +x ./run.sh
 sudo reboot

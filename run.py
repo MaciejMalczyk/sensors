@@ -36,10 +36,10 @@ def thread_cameras():
         time.sleep(600)
 
 try:
-    th_wt = threading.Thread(target=thread_light_temp, args=(1,))
-    th_acc = threading.Thread(target=thread_acc, args=(1,))
-    th_w = threading.Thread(target=thread_water, args=(1,))
-    th_cam = threading.Thread(target=thread_cameras, args=(1,))
+    th_wt = threading.Thread(target=thread_light_temp)
+    th_acc = threading.Thread(target=thread_acc)
+    th_w = threading.Thread(target=thread_water)
+    th_cam = threading.Thread(target=thread_cameras)
     th_wt.start()
     th_acc.start()
     th_w.start()

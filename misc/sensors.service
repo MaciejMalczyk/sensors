@@ -4,7 +4,7 @@ Description=Sensors service
 [Service]
 Restart=on-failure
 RestartSec=5s
-ExecStart=/bin/su -c /home/golf/sensors/run.sh golf
+ExecStart=/bin/su -c "python3 /home/golf/sensors/run.py" golf
 
 [Install]
 WantedBy=multi-user.target 

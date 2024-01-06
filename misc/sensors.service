@@ -4,6 +4,7 @@ Description=Sensors service
 [Service]
 Restart=on-failure
 RestartSec=5s
+WorkingDirectory=/home/golf/sensors
 ExecStart=/bin/su -c "python3 /home/golf/sensors/run.py" golf
 
 [Install]

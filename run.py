@@ -17,22 +17,34 @@ signal.signal(signal.SIGTERM, sigterm_handler)
 
 def thread_light_temp():
     while semaphore:
-        light_temperature.send()
+        try:
+            light_temperature.send()
+        except:
+            sigterm_handler()
         time.sleep(120)
 
 def thread_acc():
     while semaphore:
-        acceleration.send()
+        try:
+            acceleration.send()
+        except:
+            sigterm_handler()
         time.sleep(150/1000)
 
 def thread_water():
     while semaphore:
-        watering.send()
+        try:
+            watering.send()
+        except:
+            sigterm_handler()
         time.sleep(60)
 
 def thread_cameras():
     while semaphore:
-        cameras.send()
+        try:
+            cameras.send()
+        except:
+            sigterm_handler()
         time.sleep(600)
 
 try:

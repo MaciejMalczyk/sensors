@@ -33,7 +33,7 @@ def send():
         cv2.imwrite(str(img0), frame0)
         cap0.release()
         os.system('./send.sh '+img0)
-        results["img0"] = "http://192.168.100.1:8080/"+img0
+        results["img0"] = "http://10.66.66.2:8080/"+img0
     except:
         print("CAM: Capturing img0 failed")
         check = check + 1
@@ -46,7 +46,7 @@ def send():
         cv2.imwrite(str(img2), frame2)
         cap2.release()
         os.system('./send.sh '+img2)
-        results["img2"] = "http://192.168.100.1:8080/"+img2
+        results["img2"] = "http://10.66.66.2:8080/"+img2
     except:
         print("CAM: Capturing img2 failed")
         check = check + 1

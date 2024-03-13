@@ -24,7 +24,6 @@ def send():
     if w < 0 :
         w = 0
     try:
-        print(ws_string)
         with connect(ws_string) as websocket:
             websocket.send(json.dumps({
                 "action": "pump",

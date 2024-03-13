@@ -1,2 +1,7 @@
 #ignore raspi-blinka install script
 raspi-blinka.py
+modules/__pycache__
+modules/sensors/__pycache__
+modules/sensors/apds9960/__pycache__
+modules/sensors/ADS1x15/__pycache__
+

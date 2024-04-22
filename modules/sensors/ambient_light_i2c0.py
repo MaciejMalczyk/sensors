@@ -9,7 +9,6 @@ apds = device.APDS9960(bus)
 def get():
 
     apds.enableLightSensor()
-    oval = -1
     sleep(1)
     val = apds.readAmbientLight()
-    return val
+    return float(val)

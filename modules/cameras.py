@@ -28,6 +28,8 @@ def send():
     try: 
         img0 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap0 = cv2.VideoCapture(0)
+        cap0.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
+        cap0.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
         ret0, frame0 = cap0.read()
         rgb0 = cv2.cvtColor(frame0, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img0), frame0)
@@ -41,6 +43,8 @@ def send():
     try:
         img2 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap2 = cv2.VideoCapture(2)
+        cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
+        cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
         ret2, frame2 = cap2.read()
         rgb2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img2), frame2)

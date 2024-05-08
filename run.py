@@ -3,6 +3,11 @@ import threading
 import time
 import sys
 import signal
+import os
+
+#chmod send.sh script
+os.chmod("./modules/cameras/send.sh", 0o755)
+
 
 semaphore = True
 

@@ -34,7 +34,6 @@ def send():
         cap0.set(cv2.CAP_PROP_BRIGHTNESS, 5)
         cap0.set(cv2.CAP_PROP_AUTO_WB, 0)
         cap0.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
-        cap0.set(cv2.CAP_PROP_AUTOFOCUS, 0)
         ret0, frame0 = cap0.read()
         rgb0 = cv2.cvtColor(frame0, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img0), frame0)

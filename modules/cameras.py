@@ -16,21 +16,27 @@ clinostate_db = mongo_client[db_string]
 cameras_col = clinostate_db["images"]
 
 def send():
-    
+
     results = {
         "date": datetime.datetime.now(tz=datetime.timezone.utc)
     }
-    
+
     check = 0
-    
+
     os.chdir('./modules/cameras')
-    
-    try: 
+
+    try:
         img0 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap0 = cv2.VideoCapture(0)
+        #maximum width and height of image produced by used cameras. If camera has lower maximum resolution, code will work but image will be smaller
         cap0.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
         cap0.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
+        cap0.set(cv2.CAP_PROP_BRIGHTNESS, 5)
+        cap0.set(cv2.CAP_PROP_AUTO_WB, 0)
+        cap0.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
+        cap0.set(cv2.CAP_PROP_AUTOFOCUS, 0)
         ret0, frame0 = cap0.read()
+        rgb0 = cv2.cvtColor(frame0, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img0), frame0)
         cap0.release()
         os.system('./send.sh '+img0)
@@ -38,13 +44,19 @@ def send():
     except:
         print("CAM: Capturing img0 failed")
         check = check + 1
-    
+
     try:
         img2 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap2 = cv2.VideoCapture(2)
+        #maximum width and height of image produced by used cameras. If camera has lower maximum resolution, code will work but image will be smaller
         cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
         cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
+        cap2.set(cv2.CAP_PROP_BRIGHTNESS, 5)
+        cap2.set(cv2.CAP_PROP_AUTO_WB, 0)
+        cap2.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
+        cap2.set(cv2.CAP_PROP_AUTOFOCUS, 0)
         ret2, frame2 = cap2.read()
+        rgb2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img2), frame2)
         cap2.release()
         os.system('./send.sh '+img2)
@@ -52,11 +64,11 @@ def send():
     except:
         print("CAM: Capturing img2 failed")
         check = check + 1
-    
+
     if check == 2:
         os.chdir('../../')
         return
-    
+
     try:
         print("CAM: Mongodb: sending")
         cameras_col.insert_one(results)
@@ -67,7 +79,7 @@ def send():
         os.remove(img0)
     except:
         print("CAM: No img0 file")
-        
+
     try:
         os.remove(img2)
     except:

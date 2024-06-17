@@ -3,6 +3,17 @@ import pymongo
 import cv2
 import datetime
 
+from fabric import Connection
+
+conn = Connection(
+    host="golfserver",
+    user="img",
+    port=8022,
+    connect_kwargs={
+        "key_filename": "/home/golf/.ssh/img"
+    }
+)
+
 hostname = os.uname()[1]
 
 if "static" in hostname:
@@ -23,8 +34,6 @@ def send():
 
     check = 0
 
-    os.chdir('./modules/cameras')
-
     try:
         img0 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap0 = cv2.VideoCapture(0)
@@ -38,7 +47,7 @@ def send():
         rgb0 = cv2.cvtColor(frame0, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img0), frame0)
         cap0.release()
-        os.system('./send.sh '+img0)
+        conn.put(img0, remote='/images')
         results["img0"] = "http://10.66.66.2:8080/"+img0
     except:
         print("CAM: Capturing img0 failed")
@@ -58,14 +67,13 @@ def send():
         rgb2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img2), frame2)
         cap2.release()
-        os.system('./send.sh '+img2)
+        conn.put(img2, remote='/images')
         results["img2"] = "http://10.66.66.2:8080/"+img2
     except:
         print("CAM: Capturing img2 failed")
         check = check + 1
 
     if check == 2:
-        os.chdir('../../')
         return
 
     try:
@@ -84,4 +92,3 @@ def send():
     except:
         print("CAM: No img2 file")
 
-    os.chdir('../../')

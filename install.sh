@@ -9,8 +9,8 @@ else
     exit 0
 fi
 
-echo "1: Install pip3"
-sudo apt update && sudo apt install -y python3-pip python3-opencv
+echo "1: Install pip3 and packages"
+sudo apt update && sudo apt install -y python3-pip python3-opencv python3-fabric
 echo "2: Update python setuptools"
 sudo pip3 install --upgrade setuptools --break-system-packages
 echo "3: Install raspi-blinka"

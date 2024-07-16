@@ -36,6 +36,7 @@ echo "/home/$USER/.ssh/img" | ssh-keygen
 ssh-copy-id -i ~/.ssh/img -p 8022 img@golfserver
 echo "7: Setup i2c-0"
 sudo su -c "echo dtparam=i2c_vc=on >> /boot/firmware/config.txt"
+sudo raspi-config nonint do_i2c 0
 echo "8: Disable wifi power saving"
 sudo cp ./misc/rc.local /etc/
 echo "9: Install sensors service"

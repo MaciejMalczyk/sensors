@@ -32,8 +32,6 @@ def send():
         "date": datetime.datetime.now(tz=datetime.timezone.utc)
     }
 
-    check = 0
-
     try:
         img0 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap0 = cv2.VideoCapture(0)
@@ -51,7 +49,6 @@ def send():
         results["img0"] = "http://10.66.66.2:8080/"+img0
     except:
         print("CAM: Capturing img0 failed")
-        check = check + 1
 
     try:
         img2 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
@@ -71,24 +68,25 @@ def send():
         results["img2"] = "http://10.66.66.2:8080/"+img2
     except:
         print("CAM: Capturing img2 failed")
-        check = check + 1
 
-    if check == 2:
+    if len(results) > 1:
+        try:
+            print("CAM: Mongodb: sending")
+            cameras_col.insert_one(results)
+        except:
+            print("CAM: No connection to mongodb")
+
+        try:
+            os.remove(img0)
+        except:
+            print("CAM: No img0 file")
+
+        try:
+            os.remove(img2)
+        except:
+            print("CAM: No img2 file")
+
+    else:
         return
 
-    try:
-        print("CAM: Mongodb: sending")
-        cameras_col.insert_one(results)
-    except:
-        print("CAM: No connection to mongodb")
-
-    try:
-        os.remove(img0)
-    except:
-        print("CAM: No img0 file")
-
-    try:
-        os.remove(img2)
-    except:
-        print("CAM: No img2 file")
 

@@ -13,6 +13,11 @@ def sigterm_handler(signal, frame):
     semaphore = False
     sys.exit()
 
+def exception_handler():
+    print("Killing processes")
+    global semaphore
+    semaphore = False
+    sys.exit()
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
@@ -21,7 +26,7 @@ def thread_light_temp():
         try:
             light_temperature.send()
         except:
-            sigterm_handler()
+            exception_handler()
         time.sleep(120)
 
 def thread_acc():
@@ -29,7 +34,7 @@ def thread_acc():
         try:
             acceleration.send()
         except:
-            sigterm_handler()
+            exception_handler()
         time.sleep(150/1000)
 
 def thread_water():
@@ -37,7 +42,7 @@ def thread_water():
         try:
             watering.send()
         except:
-            sigterm_handler()
+            exception_handler()
         time.sleep(60)
 
 def thread_cameras():
@@ -45,7 +50,7 @@ def thread_cameras():
         try:
             cameras.send()
         except:
-            sigterm_handler()
+            exception_handler()
         time.sleep(600)
 
 try:

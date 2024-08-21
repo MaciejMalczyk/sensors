@@ -87,6 +87,7 @@ def send():
             print("CAM: No img2 file")
 
     else:
+        raise Exception("CAM: No cameras avaiable!")
         return
 
 

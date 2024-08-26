@@ -8,13 +8,15 @@ import os
 semaphore = True
 
 def sigterm_handler(signal, frame):
-    print("Killing processes")
+    print("Sigterm!")
     global semaphore
     semaphore = False
     sys.exit()
 
-def exception_handler():
-    print("Killing processes")
+def exception_handler(reason):
+    if reason == None:
+        reason = "Unknown"
+    print(f"Killing processes: {reason}")
     global semaphore
     semaphore = False
     sys.exit()
@@ -50,7 +52,7 @@ def thread_cameras():
         try:
             cameras.send()
         except:
-            exception_handler()
+            exception_handler("Thread cameras failed")
         time.sleep(600)
 
 try:

@@ -2,10 +2,11 @@
 Description=Sensors service
 
 [Service]
+User=golf
 Restart=on-failure
 RestartSec=5s
 WorkingDirectory=/home/golf/sensors
-ExecStart=/bin/su -c "python3 /home/golf/sensors/run.py" golf
+ExecStart=/usr/bin/python3 run.py
 
 [Install]
-WantedBy=multi-user.target 
+WantedBy=multi-user.target

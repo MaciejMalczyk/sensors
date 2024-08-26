@@ -5,6 +5,10 @@ import datetime
 
 from fabric import Connection
 
+#maximum width and height of image produced by used cameras.
+cam_width = 2592 #1600
+cam_height = 1944 #1200
+
 conn = Connection(
     host="golfserver",
     user="img",
@@ -35,9 +39,8 @@ def send():
     try:
         img0 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap0 = cv2.VideoCapture(0)
-        #maximum width and height of image produced by used cameras. If camera has lower maximum resolution, code will work but image will be smaller
-        cap0.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
-        cap0.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
+        cap0.set(cv2.CAP_PROP_FRAME_WIDTH, cam_width)
+        cap0.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_height)
         cap0.set(cv2.CAP_PROP_BRIGHTNESS, 5)
         cap0.set(cv2.CAP_PROP_AUTO_WB, 0)
         cap0.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
@@ -53,9 +56,8 @@ def send():
     try:
         img2 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
         cap2 = cv2.VideoCapture(2)
-        #maximum width and height of image produced by used cameras. If camera has lower maximum resolution, code will work but image will be smaller
-        cap2.set(cv2.CAP_PROP_FRAME_WIDTH, 2592)
-        cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, 1944)
+        cap2.set(cv2.CAP_PROP_FRAME_WIDTH, cam_width)
+        cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_height)
         cap2.set(cv2.CAP_PROP_BRIGHTNESS, 5)
         cap2.set(cv2.CAP_PROP_AUTO_WB, 0)
         cap2.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)

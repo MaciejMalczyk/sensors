@@ -6,7 +6,7 @@ User=golf
 Restart=on-failure
 RestartSec=5s
 WorkingDirectory=/home/golf/sensors
-ExecStart=/usr/bin/python3 run.py
+ExecStart=/usr/bin/python3 main.py
 
 [Install]
 WantedBy=multi-user.target

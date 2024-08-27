@@ -5,6 +5,8 @@ import pymongo
 from websockets.sync.client import connect
 import os
 
+from systemd import journal
+
 hostname = os.uname()[1]
 
 if "static" in hostname:
@@ -41,7 +43,11 @@ def send():
         try:
             cultivation_col.insert_one(results)
         except:
-            print("W: No connection to mongodb")
+            journal.send("W: No connection to mongodb")
+            print("W: No connection to mongodb", f'{datetime.datetime.now()}:')
+            raise Exception("W: No connection to mongodb")
+            return
             
     except:
-        print("No connection to clinostate backend!")
+        journal.send("W: No connection to clinostate backend!")
+        print("W: No connection to clinostate backend!", f'{datetime.datetime.now()}:')

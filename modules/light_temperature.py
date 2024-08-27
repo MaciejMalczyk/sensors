@@ -5,6 +5,8 @@ import pymongo
 import datetime
 import os
 
+from systemd import journal
+
 hostname = os.uname()[1]
 
 if "static" in hostname:
@@ -36,6 +38,9 @@ def send():
     try:
         cultivation_col.insert_one(results)
     except:
-        print("LT: No connection to mongodb")
+        journal.send("LT: No connection to mongodb")
+        print("LT: No connection to mongodb", f'{datetime.datetime.now()}:')
+        raise Exception("LT: No connection to mongodb")
+        return
 
 

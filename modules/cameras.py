@@ -3,6 +3,8 @@ import pymongo
 import cv2
 import datetime
 
+from systemd import journal
+
 from fabric import Connection
 
 #maximum width and height of image produced by used cameras.
@@ -51,7 +53,8 @@ def send():
         conn.put(img0, remote='/images')
         results["img0"] = "http://10.66.66.2:8080/"+img0
     except:
-        print("CAM: Capturing img0 failed")
+        journal.send("CAM: Capturing img0 failed")
+        print("CAM: Capturing img0 failed", f'{datetime.datetime.now()}')
 
     try:
         img2 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
@@ -69,26 +72,33 @@ def send():
         conn.put(img2, remote='/images')
         results["img2"] = "http://10.66.66.2:8080/"+img2
     except:
-        print("CAM: Capturing img2 failed")
+        journal.send("CAM: Capturing img2 failed")
+        print("CAM: Capturing img2 failed", f'{datetime.datetime.now()}')
 
     if len(results) > 1:
         try:
-            print("CAM: Mongodb: sending")
+            journal.send("CAM: Mongodb: sending")
+            print("CAM: Mongodb: sending", f'{datetime.datetime.now()}')
             cameras_col.insert_one(results)
         except:
-            print("CAM: No connection to mongodb")
+            journal.send("CAM: No connection to mongodb")
+            print("CAM: No connection to mongodb", f'{datetime.datetime.now()}')
 
         try:
             os.remove(img0)
         except:
-            print("CAM: No img0 file")
+            journal.send("CAM: No img0 file")
+            print("CAM: No img0 file", f'{datetime.datetime.now()}')
 
         try:
             os.remove(img2)
         except:
-            print("CAM: No img2 file")
+            journal.send("CAM: No img2 file")
+            print("CAM: No img2 file", f'{datetime.datetime.now()}')
 
     else:
+        journal.send("CAM: No cameras avaiable!")
+        print("CAM: No cameras avaiable!", f'{datetime.datetime.now()}')
         raise Exception("CAM: No cameras avaiable!")
         return
 

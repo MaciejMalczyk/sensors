@@ -9,7 +9,7 @@ def get():
         ADS.setGain(ADS.PGA_4_096V)
         
         raw = ADS.readADC(0)
-        print("Moisture: ", raw)
+        #print("Moisture: ", raw)
     except:
         print("Error: ", raw)
     

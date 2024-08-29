@@ -3,13 +3,9 @@ import pymongo
 import cv2
 import datetime
 
+from . import max_cam_res
 from systemd import journal
-
 from fabric import Connection
-
-#maximum width and height of image produced by used cameras.
-cam_width = 2592 #1600
-cam_height = 1944 #1200
 
 conn = Connection(
     host="golfserver",
@@ -32,48 +28,36 @@ mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
 clinostate_db = mongo_client[db_string]
 cameras_col = clinostate_db["images"]
 
+def capture(dev_video):
+    try:
+        [cam_width, cam_height] = max_cam_res.get_max_res(f'/dev/video{dev_video}')
+        img = f"{db_string}_{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y%m%d-%H%M%S')}.jpg"
+        cap = cv2.VideoCapture(dev_video)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, cam_width)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_height)
+        cap.set(cv2.CAP_PROP_BRIGHTNESS, 5)
+        cap.set(cv2.CAP_PROP_AUTO_WB, 0)
+        cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
+        ret, frame = cap.read()
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
+        cv2.imwrite(str(img), frame)
+        cap.release()
+        conn.put(img, remote='/images')
+        return img
+    except:
+        journal.send(f"CAM: Capturing img{dev_video} failed")
+        print(f"CAM: Capturing img{dev_video} failed", f'{datetime.datetime.now()}')
+
 def send():
 
+    img0 = capture(0)
+    img2 = capture(2)
+
     results = {
-        "date": datetime.datetime.now(tz=datetime.timezone.utc)
+        "date": datetime.datetime.now(tz=datetime.timezone.utc),
+        "img0": f"http://10.66.66.2:8080/{img0}",
+        "img2": f"http://10.66.66.2:8080/{img2}",
     }
-
-    try:
-        img0 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
-        cap0 = cv2.VideoCapture(0)
-        cap0.set(cv2.CAP_PROP_FRAME_WIDTH, cam_width)
-        cap0.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_height)
-        cap0.set(cv2.CAP_PROP_BRIGHTNESS, 5)
-        cap0.set(cv2.CAP_PROP_AUTO_WB, 0)
-        cap0.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
-        ret0, frame0 = cap0.read()
-        rgb0 = cv2.cvtColor(frame0, cv2.COLOR_BGR2BGRA)
-        cv2.imwrite(str(img0), frame0)
-        cap0.release()
-        conn.put(img0, remote='/images')
-        results["img0"] = "http://10.66.66.2:8080/"+img0
-    except:
-        journal.send("CAM: Capturing img0 failed")
-        print("CAM: Capturing img0 failed", f'{datetime.datetime.now()}')
-
-    try:
-        img2 = db_string+"_"+datetime.datetime.now(tz=datetime.timezone.utc).strftime("%Y%m%d-%H%M%S")+".jpg"
-        cap2 = cv2.VideoCapture(2)
-        cap2.set(cv2.CAP_PROP_FRAME_WIDTH, cam_width)
-        cap2.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_height)
-        cap2.set(cv2.CAP_PROP_BRIGHTNESS, 5)
-        cap2.set(cv2.CAP_PROP_AUTO_WB, 0)
-        cap2.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0)
-        cap2.set(cv2.CAP_PROP_AUTOFOCUS, 0)
-        ret2, frame2 = cap2.read()
-        rgb2 = cv2.cvtColor(frame2, cv2.COLOR_BGR2BGRA)
-        cv2.imwrite(str(img2), frame2)
-        cap2.release()
-        conn.put(img2, remote='/images')
-        results["img2"] = "http://10.66.66.2:8080/"+img2
-    except:
-        journal.send("CAM: Capturing img2 failed")
-        print("CAM: Capturing img2 failed", f'{datetime.datetime.now()}')
 
     if len(results) > 1:
         try:

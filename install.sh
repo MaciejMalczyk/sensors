@@ -15,7 +15,7 @@ sudo cp ./misc/dphys-swapfile /etc
 sudo dphys-swapfile setup
 sudo dphys-swapfile swapon
 echo "2: Install pip3 and packages"
-sudo apt update && sudo apt install -y python3-pip python3-opencv python3-fabric python3-systemd
+sudo apt update && sudo apt install -y python3-pip python3-opencv python3-fabric v4l-utils
 echo "3: Update python setuptools"
 sudo pip3 install --upgrade setuptools --break-system-packages
 echo "4: Install raspi-blinka"

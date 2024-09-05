@@ -57,12 +57,12 @@ def send():
     img0 = capture(0)
 
     if img0:
-        result["img0"] = f"http://10.66.66.2:8080/{img0}"
+        results["img0"] = f"http://10.66.66.2:8080/{img0}"
 
     img2 = capture(2)
 
     if img2:
-        result["img2"] = f"http://10.66.66.2:8080/{img2}"
+        results["img2"] = f"http://10.66.66.2:8080/{img2}"
 
 
 

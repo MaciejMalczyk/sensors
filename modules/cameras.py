@@ -50,14 +50,21 @@ def capture(dev_video):
 
 def send():
 
-    img0 = capture(0)
-    img2 = capture(2)
-
     results = {
         "date": datetime.datetime.now(tz=datetime.timezone.utc),
-        "img0": f"http://10.66.66.2:8080/{img0}",
-        "img2": f"http://10.66.66.2:8080/{img2}",
     }
+
+    img0 = capture(0)
+
+    if img0:
+        result["img0"] = f"http://10.66.66.2:8080/{img0}"
+
+    img2 = capture(2)
+
+    if img2:
+        result["img2"] = f"http://10.66.66.2:8080/{img2}"
+
+
 
     if len(results) > 1:
         try:

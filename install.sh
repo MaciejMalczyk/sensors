@@ -2,10 +2,10 @@
 
 echo "0: Checking connection to server"
 
-if ping -c 1 golfserver &> /dev/null ; then
+if ping -c 1 clinostate.server &> /dev/null ; then
     echo "Continue..."
 else
-    echo "No connection to golfserver. Setup VPN and add address to /etc/hosts"
+    echo "No connection to clinostate.server. Setup VPN and add address to /etc/hosts"
     exit 0
 fi
 
@@ -33,7 +33,7 @@ sudo rm -r python-apds9960
 cd ..
 echo "6: Generate ssh keys"
 echo "/home/$USER/.ssh/img" | ssh-keygen
-ssh-copy-id -i ~/.ssh/img -p 8022 img@golfserver
+ssh-copy-id -i ~/.ssh/img -p 8022 img@clinostate.server
 echo "7: Setup i2c-0"
 sudo su -c "echo dtparam=i2c_vc=on >> /boot/firmware/config.txt"
 sudo raspi-config nonint do_i2c 0

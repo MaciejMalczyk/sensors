@@ -9,12 +9,14 @@ from systemd import journal
 
 hostname = os.uname()[1]
 
+host = "clinostate.server"
+
 if "static" in hostname:
     db_string = "clinostate-static"
 else:
     db_string = "clinostate"
 
-mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
+mongo_client = pymongo.MongoClient(f"mongodb://{host}:27017")
 clinostate_db = mongo_client[db_string]
 cultivation_col = clinostate_db["cultivation"]
 

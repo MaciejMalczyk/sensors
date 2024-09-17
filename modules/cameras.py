@@ -7,8 +7,10 @@ from . import max_cam_res
 from systemd import journal
 from fabric import Connection
 
+host = "clinostate.server"
+
 conn = Connection(
-    host="golfserver",
+    host=host,
     user="img",
     port=8022,
     connect_kwargs={
@@ -24,7 +26,7 @@ else:
     db_string = "clinostate"
 
 
-mongo_client = pymongo.MongoClient("mongodb://golfserver:27017")
+mongo_client = pymongo.MongoClient(f"mongodb://{host}:27017")
 clinostate_db = mongo_client[db_string]
 cameras_col = clinostate_db["images"]
 
@@ -57,12 +59,12 @@ def send():
     img0 = capture(0)
 
     if img0:
-        results["img0"] = f"http://10.66.66.2:8080/{img0}"
+        results["img0"] = f"http://{host}:8080/{img0}"
 
     img2 = capture(2)
 
     if img2:
-        results["img2"] = f"http://10.66.66.2:8080/{img2}"
+        results["img2"] = f"http://{host}:8080/{img2}"
 
 
 

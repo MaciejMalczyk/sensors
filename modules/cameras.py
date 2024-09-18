@@ -44,7 +44,7 @@ def capture(dev_video):
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
         cv2.imwrite(str(img), frame)
         cap.release()
-        conn.put(img, remote='/images')
+        conn.put(img, remote='/home/img/images')
         return img
     except:
         journal.send(f"CAM: Capturing img{dev_video} failed")

@@ -1,4 +1,4 @@
-from .sensors import ambient_light as ambient_light_i2c0, ambient_light as ambient_light_i2c1, temperature
+from .sensors import ambient_light, temperature
 
 import json
 import pymongo
@@ -26,16 +26,14 @@ def send():
     # RGBC Characteristics
     
     try:
-        ambient_light_i2c0.port = 0
-        l0 = ambient_light_i2c0.get()
+        l0 = ambient_light.get(0)
     except:
         print("LT: ambient_light_i2c0 failed to read")
         journal.send("LT: ambient_light_i2c0 failed to read")
         l0 = -1
 
     try:
-        ambient_light_i2c1.port = 1
-        l1 = ambient_light_i2c1.get()
+        l1 = ambient_light.get(1)
     except:
         print("LT: ambient_light_i2c1 failed to read")
         journal.send("LT: ambient_light_i2c1 failed to read")
@@ -46,7 +44,7 @@ def send():
     except:
         print("LT: temperature 0x19 failed to read")
         journal.send("LT: temperature 0x19 failed to read")
-        l0 = -1
+        t0 = -1
 
     try:
         t1 = temperature.get(0x1a)

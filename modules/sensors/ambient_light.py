@@ -3,11 +3,14 @@ import smbus
 from time import sleep
 
 port = 0
-bus = smbus.SMBus(port)
-apds = device.APDS9960(bus)
+
+try:
+    bus = smbus.SMBus(port)
+    apds = device.APDS9960(bus)
+except:
+    print("Error: `Cannot connect to sensor apds9960 i2c0")
 
 def get():
-
     apds.enableLightSensor()
     sleep(1)
     val = apds.readAmbientLight()

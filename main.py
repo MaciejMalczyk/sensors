@@ -50,23 +50,23 @@ def thread_water():
             exception_handler(exception)
         time.sleep(60)
 
-#def thread_cameras():
-#    while semaphore:
-#        try:
-#            cameras.send()
-#        except Exception as exception:
-#            exception_handler(exception)
-#        time.sleep(600)
+def thread_cameras():
+   while semaphore:
+       try:
+           cameras.send()
+       except Exception as exception:
+           exception_handler(exception)
+       time.sleep(600)
 
 try:
     th_lt = threading.Thread(target=thread_light_temp)
     th_acc = threading.Thread(target=thread_acc)
     th_w = threading.Thread(target=thread_water)
- #   th_cam = threading.Thread(target=thread_cameras)
+    th_cam = threading.Thread(target=thread_cameras)
     th_lt.start()
     th_acc.start()
     th_w.start()
-  #  th_cam.start()
+    th_cam.start()
 
 except:
     print("Exiting...")

@@ -1,0 +1,8 @@
+[Unit]
+Description=BootLog service
+
+[Service]
+ExecStart=/usr/bin/bash /etc/systemd/system/BootLog.sh
+
+[Install]
+WantedBy=multi-user.target

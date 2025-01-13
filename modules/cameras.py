@@ -3,7 +3,7 @@ import pymongo
 import cv2
 import datetime
 
-from . import max_cam_res
+from . import camera_scripts
 from systemd import journal
 from fabric import Connection
 
@@ -32,7 +32,7 @@ cameras_col = clinostate_db["images"]
 
 def capture(dev_video):
     try:
-        [cam_width, cam_height] = max_cam_res.get_max_res(f'/dev/video{dev_video}')
+        [cam_width, cam_height] = camera_scripts.get_max_res(f'/dev/video{dev_video}')
         img = f"{db_string}_{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y%m%d-%H%M%S')}.jpg"
         cap = cv2.VideoCapture(dev_video)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, cam_width)
@@ -56,15 +56,18 @@ def send():
         "date": datetime.datetime.now(tz=datetime.timezone.utc),
     }
 
-    img0 = capture(0)
+    cameras = camera_scripts.get_camera_devices()
 
-    if img0:
-        results["img0"] = f"http://{host}:8080/{img0}"
+    for c in cameras:
+        c_img = capture(int(c[10:]))
+        if c_img:
+            results[f"img{int(c[10:])}"] = f"http://{host}:8080/{c_img}"
 
-    img2 = capture(2)
-
-    if img2:
-        results["img2"] = f"http://{host}:8080/{img2}"
+        try:
+            os.remove(c_img)
+        except:
+            journal.send(f"CAM: No img{c_img} file")
+            print(f"CAM: No img{c_img} file", f'{datetime.datetime.now()}')
 
 
 
@@ -76,18 +79,6 @@ def send():
         except:
             journal.send("CAM: No connection to mongodb")
             print("CAM: No connection to mongodb", f'{datetime.datetime.now()}')
-
-        try:
-            os.remove(img0)
-        except:
-            journal.send("CAM: No img0 file")
-            print("CAM: No img0 file", f'{datetime.datetime.now()}')
-
-        try:
-            os.remove(img2)
-        except:
-            journal.send("CAM: No img2 file")
-            print("CAM: No img2 file", f'{datetime.datetime.now()}')
 
     else:
         journal.send("CAM: No cameras avaiable!")

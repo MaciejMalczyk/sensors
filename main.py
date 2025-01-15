@@ -1,62 +1,59 @@
-from modules import *
+from modules import acceleration, cameras, watering, light_temperature
 import threading
 import time
 import sys
 import signal
-import os
 import datetime
 
 from systemd import journal
 
-semaphore = True
+semaphore = threading.Event()
 
 def sigterm_handler(signal, frame):
     journal.send("Main: Sigterm!")
     print("Main: Sigterm!", f'{datetime.datetime.now()}')
-    global semaphore
-    semaphore = False
+    semaphore.set()
     sys.exit()
 
 def exception_handler(exception):
     journal.send(f"Killing processes: {exception}")
     print(f"Killing processes: {exception}", f'{datetime.datetime.now()}')
-    global semaphore
-    semaphore = False
+    semaphore.set()
     sys.exit()
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
 def thread_light_temp():
-    while semaphore:
+    while not semaphore.is_set():
         try:
             light_temperature.send()
         except Exception as exception:
             exception_handler(exception)
-        time.sleep(120)
+        semaphore.wait(120)
 
 def thread_acc():
-    while semaphore:
+    while not semaphore.is_set():
         try:
             acceleration.send()
         except Exception as exception:
             exception_handler(exception)
-        time.sleep(150/1000)
+        semaphore.wait(150/1000)
 
 def thread_water():
-    while semaphore:
+    while not semaphore.is_set():
         try:
             watering.send()
         except Exception as exception:
             exception_handler(exception)
-        time.sleep(60)
+        semaphore.wait(60)
 
 def thread_cameras():
-   while semaphore:
+   while not semaphore.is_set():
        try:
            cameras.send()
        except Exception as exception:
            exception_handler(exception)
-       time.sleep(600)
+       semaphore.wait(600)
 
 try:
     th_lt = threading.Thread(target=thread_light_temp)

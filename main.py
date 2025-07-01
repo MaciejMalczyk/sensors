@@ -1,4 +1,4 @@
-from modules import acceleration, cameras, watering, light_temperature
+from modules import acceleration, cameras, watering, cultivation_other
 import threading
 import time
 import sys
@@ -16,17 +16,19 @@ def sigterm_handler(signal, frame):
     sys.exit()
 
 def exception_handler(exception):
-    journal.send(f"Killing processes: {exception}")
-    print(f"Killing processes: {exception}", f'{datetime.datetime.now()}')
-    semaphore.set()
-    sys.exit()
+    # journal.send(f"Killing processes: {exception}")
+    # print(f"Killing processes: {exception}", f'{datetime.datetime.now()}')
+    # semaphore.set()
+    # sys.exit()
+    print(f"Main: Exception accured: {exception}")
+    journal.send(f"Main: Exception accured: {exception}")
 
 signal.signal(signal.SIGTERM, sigterm_handler)
 
-def thread_light_temp():
+def thread_cultivation_other():
     while not semaphore.is_set():
         try:
-            light_temperature.send()
+            cultivation_other.send()
         except Exception as exception:
             exception_handler(exception)
         semaphore.wait(120)
@@ -56,11 +58,11 @@ def thread_cameras():
        semaphore.wait(600)
 
 try:
-    th_lt = threading.Thread(target=thread_light_temp)
+    th_co = threading.Thread(target=thread_cultivation_other)
     th_acc = threading.Thread(target=thread_acc)
     th_w = threading.Thread(target=thread_water)
     th_cam = threading.Thread(target=thread_cameras)
-    th_lt.start()
+    th_co.start()
     th_acc.start()
     th_w.start()
     th_cam.start()

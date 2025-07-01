@@ -2,7 +2,7 @@
 Description=NetTest service
 
 [Service]
-ExecStart=/usr/bin/bash /etc/systemd/system/NetTest.sh
+ExecStart=/usr/bin/bash NetTest.sh
 
 [Install]
 WantedBy=multi-user.target

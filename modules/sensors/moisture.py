@@ -1,6 +1,10 @@
 from .ADS1x15 import *
+import config
 
-ADS = ADS1115(1, 0x48)
+try:
+    ADS = ADS1115(config.i2c[0], 0x48)
+except:
+    print("Moisture error")
 
 def get():
 

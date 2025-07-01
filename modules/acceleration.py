@@ -1,4 +1,4 @@
-from .sensors import *
+from .sensors import accel
 
 import json
 import pymongo
@@ -26,6 +26,7 @@ def send():
             "g": accel.get(),
             "date": datetime.datetime.now(tz=datetime.timezone.utc),
         }
+
     
     try:
         cultivation_col.insert_one(results)

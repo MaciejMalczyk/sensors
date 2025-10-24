@@ -1,13 +1,17 @@
 import subprocess
 
+
 def get_camera_devices():
     cameras = []
 
-    list_v4l2_devices = f"ls /dev/video*"
+    list_v4l2_devices = "ls /dev/video*"
 
     list_proc = subprocess.Popen(list_v4l2_devices, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
 
     list_res, list_err = list_proc.communicate()
+
+    if list_err:
+        raise Exception("")
 
     v4l2_dev_list = list_res.decode("utf-8").splitlines()
 
@@ -21,15 +25,16 @@ def get_camera_devices():
             print(f"Camera_scripts: Error: {cap_err.decode('utf-8')}")
 
         if cap_data == "0x04200001\n":
-            cameras.append(dev) #Camera
+            cameras.append(dev)  # Camera
         elif cap_data == "0x04a00000\n":
-            continue #Meta
+            continue  # Meta
         elif cap_data == "0x04208000\n":
-            continue #Cedrus
+            continue  # Cedrus (sunxi-driver)
         else:
             print(f"Unknown: {cap_data}")
 
     return cameras
+
 
 def get_max_res(device):
     resolutions = []
@@ -44,6 +49,9 @@ def get_max_res(device):
 
     for n in res:
         v = n.split('x')
-        resolutions.append([int(v[0]),int(v[1])])
+        resolutions.append([
+            int(v[0]),
+            int(v[1])
+        ])
 
     return max(resolutions)

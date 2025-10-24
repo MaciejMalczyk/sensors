@@ -1,9 +1,9 @@
-from .apds9960 import *
+from .apds9960 import device
 import smbus
 from time import sleep
 
-def get(port):
 
+def get(port):
     try:
         bus = smbus.SMBus(port)
         apds = device.APDS9960(bus)

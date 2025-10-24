@@ -1,28 +1,55 @@
 #!/bin/bash
 
-STEP=0
-RPI=0
-BL='\033[1;34m'
-NC='\033[0m'
-
-echo -e "${BL} $STEP: Checking connection to server ${NC}"
-
-if ping -c 1 clinostate.server &> /dev/null ; then
-    echo -e "Continue..."
-else
-    echo -e "No connection to clinostate.server. Setup VPN and add address to /etc/hosts"
+if [ "$1" = "-h" ] ; then
+    echo "Install script for cultivation"
+    echo "\$1 - ip address of main server"
+    echo "\$2 - parent device hostname"
     exit 0
 fi
 
-if command -v raspi-config >/dev/null 2>&1
+SCRIPT_SERVER_IP=$1
+SCRIPT_DEVICE_HOSTNAME=$2
+STEP=0
+DEVICE=0
+BL='\033[1;34m'
+NC='\033[0m'
+
+if command -v raspi-config > /dev/null 2>&1
 then
     echo -e "${BL}Raspberry Pi device detected.${NC}"
-    RPI=1
+    DEVICE=1
+elif grep 'sun50i-h616' /boot/armbianEnv.txt > /dev/null
+then
+    echo -e "${BL}Armbian device detected.${NC}"
+    DEVICE=2
 else
-    echo -e "${BL}Other device detected.${NC}"
+    echo -e "${BL}Other device detected. Do at your own risk.${NC}"
+    read -rsn1 -p "${BL}Continue (y/any) ??${NC}" ANSWER;
+    if [ "$ANSWER" != "y" ] ; then
+        exit 0
+    fi
 fi
 
-if [ $RPI -eq 1 ]
+# Main script
+
+echo -e "${BL} $STEP: Setting hostnames ${NC}"
+if [ "$SCRIPT_SERVER_IP" ] && [ "$SCRIPT_DEVICE_HOSTNAME" ] ; then
+    echo "$SCRIPT_SERVER_IP clinostate.server" | sudo tee -a /etc/hosts
+    sudo hostnamectl set-hostname "$SCRIPT_DEVICE_HOSTNAME-cultivation"
+else
+    echo "No proper server ip and hostname given. Use -h to check options."
+    exit 0
+fi
+
+((STEP++)); echo -e "${BL} $STEP: Checking server ${NC}"
+if ping -c 1 "clinostate.server" &> /dev/null ; then
+    echo -e "Continue..."
+else
+    echo -e "No connection to clinostate.server ($SCRIPT_SERVER_IP). Check network settings and /etc/hosts file."
+    exit 0
+fi
+
+if [ "$DEVICE" -eq 1 ]
 then
     ((STEP++)); echo -e "${BL} $STEP: Enralge swap to 2G ${NC}"
     sudo dphys-swapfile swapoff
@@ -49,7 +76,7 @@ cd .. || exit 1
 echo -e "/home/$USER/.ssh/img" | ssh-keygen -q -N ""
 ssh-copy-id -i ~/.ssh/img -p 8022 img@clinostate.server
 
-if [ $RPI -eq 1 ]
+if [ "$DEVICE" -eq 1 ]
 then
     ((STEP++)); echo -e "${BL} $STEP: Setup i2c-0 ${NC}"
     sudo su -c "echo -e dtparam=i2c_vc=on >> /boot/firmware/config.txt"
@@ -57,6 +84,12 @@ then
 
     ((STEP++)); echo -e "${BL} $STEP: Disable wifi power saving ${NC}"
     sudo cp ./misc/rc.local /etc/
+fi
+
+if [ "$DEVICE" -eq 2 ]
+then
+    ((STEP++)); echo -e "${BL} $STEP: Setup sun50i-h616 i2c overlays ${NC}"
+    sed 's/overlays=.*/overlays=i2c1-pi i2c2-pi/' /boot/armbianEnv.txt
 fi
 
 ((STEP++)); echo -e "${BL} $STEP: Install sensors service ${NC}"

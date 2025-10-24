@@ -1,29 +1,36 @@
 from modules import acceleration, cameras, watering, cultivation_other
 import threading
-import time
 import sys
 import signal
 import datetime
 
 from systemd import journal
 
+from config import to_kill_at_exception
+
 semaphore = threading.Event()
 
+
+# Kill each thread when sigterm signal is send
 def sigterm_handler(signal, frame):
     journal.send("Main: Sigterm!")
     print("Main: Sigterm!", f'{datetime.datetime.now()}')
     semaphore.set()
     sys.exit()
 
+
 def exception_handler(exception):
-    # journal.send(f"Killing processes: {exception}")
-    # print(f"Killing processes: {exception}", f'{datetime.datetime.now()}')
-    # semaphore.set()
-    # sys.exit()
+    if to_kill_at_exception:
+        journal.send(f"Killing processes: {exception}")
+        print(f"Killing processes: {exception}", f'{datetime.datetime.now()}')
+        semaphore.set()
+        sys.exit()
     print(f"Main: Exception accured: {exception}")
     journal.send(f"Main: Exception accured: {exception}")
 
+
 signal.signal(signal.SIGTERM, sigterm_handler)
+
 
 def thread_cultivation_other():
     while not semaphore.is_set():
@@ -33,6 +40,7 @@ def thread_cultivation_other():
             exception_handler(exception)
         semaphore.wait(120)
 
+
 def thread_acc():
     while not semaphore.is_set():
         try:
@@ -40,6 +48,7 @@ def thread_acc():
         except Exception as exception:
             exception_handler(exception)
         semaphore.wait(150/1000)
+
 
 def thread_water():
     while not semaphore.is_set():
@@ -49,13 +58,15 @@ def thread_water():
             exception_handler(exception)
         semaphore.wait(60)
 
+
 def thread_cameras():
-   while not semaphore.is_set():
-       try:
-           cameras.send()
-       except Exception as exception:
-           exception_handler(exception)
-       semaphore.wait(600)
+    while not semaphore.is_set():
+        try:
+            cameras.send()
+        except Exception as exception:
+            exception_handler(exception)
+        semaphore.wait(600)
+
 
 try:
     th_co = threading.Thread(target=thread_cultivation_other)

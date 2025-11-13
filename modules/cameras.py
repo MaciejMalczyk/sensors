@@ -28,7 +28,7 @@ cameras_col = clinostate_db["images"]
 def capture(dev_video):
     try:
         [cam_width, cam_height] = camera_scripts.get_max_res(f'/dev/video{dev_video}')
-        img = f"{hostname}_{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y%m%d-%H%M%S')}.jpg"
+        img = f"{db}_{datetime.datetime.now(tz=datetime.timezone.utc).strftime('%Y%m%d-%H%M%S')}.jpg"
         cap = cv2.VideoCapture(dev_video)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, cam_width)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, cam_height)

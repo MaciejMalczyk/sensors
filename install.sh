@@ -89,8 +89,13 @@ fi
 if [ "$DEVICE" -eq 2 ]
 then
     ((STEP++)); echo -e "${BL} $STEP: Setup sun50i-h616 i2c overlays ${NC}"
-    sed 's/overlays=.*/overlays=i2c1-pi i2c2-pi/' /boot/armbianEnv.txt
+    if cat /boot/armbianEnv.txt | grep "overlays" >> /dev/null; then
+        sudo sed 's/overlays=.*/overlays=i2c1-pi i2c2-pi/' /boot/armbianEnv.txt
+    else
+        sudo sed -i -e '$aoverlays=i2c1-pi i2c2-pi' /boot/armbianEnv.txt
+    fi
 fi
+
 
 ((STEP++)); echo -e "${BL} $STEP: Install sensors service ${NC}"
 sudo cp ./misc/sensors.service /etc/systemd/system/

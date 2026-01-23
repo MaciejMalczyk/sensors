@@ -59,7 +59,7 @@ then
 fi
 
 ((STEP++)); echo -e "${BL} $STEP: Install pip3 and packages ${NC}"
-sudo apt update && sudo apt install -y python3-pip python3-opencv python3-fabric v4l-utils
+sudo apt update && sudo apt install -y python3-pip python3-opencv python3-fabric v4l-utils i2c-tools python3-systemd python3-smbus
 
 ((STEP++)); echo -e "${BL} $STEP: Update python setuptools ${NC}"
 sudo pip3 install --upgrade setuptools --break-system-packages
@@ -101,6 +101,9 @@ fi
 sudo cp ./misc/sensors.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable sensors.service
+
+((STEP++)); echo -e "${BL} $STEP: Setup permissions ${NC}"
+sudo usermod -a -G i2c $USER
 
 ((STEP++)); echo -e "${BL} $STEP: Reboot: 3s ${NC}"
 sleep 3s

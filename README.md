@@ -1,6 +1,8 @@
 # Cultivation sensors  
 Code for all cultivation sensors that are used in the experiment.
 
+Part of larger repository: https://github.com/MaciejMalczyk/clinostat-capsule
+
 ## Requirements
 
 Any SBC with 2 USBs and 2 I2C interfaces. Install script covers Raspbian compatible devices and Armbian on sun50i-h616 SoC/dt
